@@ -1,0 +1,152 @@
+<html>
+	<head>
+		<script src="jq.js"></script>
+		<script>
+		function rand(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		 function testCollision(okId,position1, size1,balonId, position2, size2) {
+			
+			if (((position1.left + size1.width)  > position2.left) &&
+				((position1.top  + size1.height) > position2.top)  &&
+				((position2.left + size2.width)  > position1.left) &&
+				((position2.top  + size2.height) > position1.top)) {
+				var sayi=parseInt(document.getElementById(okId).getAttribute("vurulanlar"));
+				document.getElementById(okId).setAttribute("vurulanlar",sayi+1);
+				return balonId;
+			}
+			else{
+				return -1;
+			}
+		}
+		function oran(g1,g2,y){
+			return Math.floor((g2*y)/g1);
+		}
+		</script>
+		<script>
+			var balonSayi=50; /*Toplamda gelecek balon sayısını belirtir*/
+			var maxOk=55;	  /*Kaç ok hakkının bulunduğunu belirtir*/
+			var balonBoyut={w:50,h:86};
+			var okBoyut={w:50,h:14};
+			var okImg="ok.png";
+
+			var vurulanSayi=0;
+			var atilanOk=0;
+			var puan=0;
+			var extraPuan=0;
+			var extraAdet=0;
+			var balon="";
+			var balonSure=[];
+
+			for(i=0;i<=balonSayi;i++){
+				balonSure.push(rand(1,5)*1000);
+			}
+			
+			$(function(){
+				giris();
+				setTimeout(function(){
+					$("#giris").slideUp(300);
+					oyun();
+				},3000);
+			});
+			function giris(){
+				$(function(){
+				var sayac=2;
+				var inter=setInterval(function(){
+					
+					$("#giris").html(sayac);
+					sayac==0?clearInterval(inter):"";
+					sayac-=1;
+					
+				},1000);
+				
+				});
+			}
+			function oyun(){
+				$("#kalan-ok").html(maxOk);
+				$("#puan").html(balonSayi+"/0");
+				balonSure.forEach(function(val,idx){
+						setTimeout(function(){
+							var balon=$("<img src='balon.gif' class='balon' id='balon"+idx+"'  />").css("right",rand(1,4)*100);
+							$("body").append(balon);
+							balon.animate({"top":"-100px"},{duration:oran(1920,5000,$(window).width()),easing:"linear"});
+							if(balonSure.length-1==idx)
+							{
+								oyunuBitir();
+							}
+						},val*idx);
+					});
+					
+					
+					$("body").mousemove(function(e){
+							if(e.pageY>50 && e.pageY+80<$("body").height()){
+								setTimeout(function(){
+									$("#robin").css("top",e.pageY-55);
+								},150);
+							}
+					}).click(function(){
+						atilanOk+=1;
+						$("#kalan-ok").html(maxOk-atilanOk);
+						if(maxOk+1>atilanOk)
+						{
+							var ok=$("<img src='"+okImg+"' class='ok' id='ok"+atilanOk+"' vurulanlar='0' />").css({"top":$("#robin").position().top+35});
+							$("body").append(ok);
+							ok.animate(
+								{"left":"100%"},{
+									duration:oran(1920,1000,$(window).width()),
+									easing:"linear",
+									step: function(){
+										
+										var okPozisyon=ok.position();
+										var balon = document.getElementsByClassName('balon');
+										
+										for (var i = 0; i < balon.length; ++i) {
+
+											var item = balon[i];  
+											var balonPozisyon=item.getBoundingClientRect();
+											var id= testCollision("ok"+atilanOk,okPozisyon, {"width":okBoyut.w,"height":okBoyut.w},$(item).attr("id"),{"top":balonPozisyon.top+35,"left":balonPozisyon.left}, {"width":balonBoyut.w,"height":balonBoyut.h});
+											$(".balon[id='"+id+"']").remove();
+											vurulanSayi=id==-1?vurulanSayi:vurulanSayi+1;
+											
+
+										}
+									},
+									complete: function(){
+										puan=vurulanSayi;
+										$("#puan").html(balonSayi+"/"+vurulanSayi);		
+										if($(this).attr("vurulanlar")>1){
+											extraAdet=extraAdet>=4?4:extraAdet+1;
+											extraPuan+=parseInt($(this).attr("vurulanlar"));
+											$("#extra span").append(" + "+$(this).attr("vurulanlar"));
+											okBoyut.w+=10;
+											okBoyut.h+=10;
+											okImg="ok"+extraAdet+(extraAdet>3?".gif":".png");
+										}
+										//$(this).remove();
+									}
+								});
+						}
+						else{
+							oyunuBitir();
+						}
+					});
+			}
+			function oyunuBitir(){
+				if(confirm("Okun Bitti. Puanın:"+parseInt(puan+extraPuan)))
+				{
+					location.reload();
+				}
+			}
+		</script>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="giris" >3</div>
+		<img src="robin.png" id="robin" width="200px"  />
+		<center>
+			<div id="puan">0</div>
+			<div id="kalan-ok" ></div>
+			<div id="extra" >extra puan<span></span></div>
+		</center>
+	</body>
+</html>

@@ -1,0 +1,80 @@
+*{
+    margin:0;
+    padding: 0;
+}
+body{
+    height: :100%;
+    width:100%;
+    overflow:hidden;
+
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+    -khtml-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
+}
+#robin{
+    position: absolute;
+    left: 10px;
+    top:10px;
+}
+.balon{
+    position: absolute;
+    right: 10px;
+    bottom:-100px;
+}
+.ok{
+    position: absolute;
+    left:50px;
+    width: 50px;
+}
+.ok[src='ok1.png']{
+    width: 60px;
+}
+.ok[src='ok2.png']{
+    width: 70px;
+}
+.ok[src='ok3.png']{
+    width: 80px;
+}
+.ok[src='ok4.gif']{
+    width: 110px;
+}
+#puan,#kalan-ok,#extra{
+    
+    margin:0 auto;
+    padding: 15px;
+    background-color:#e67e22;
+    color:#FFF;
+    font-size:30px;
+    font-family: Arial;
+    text-align:center;
+    display: inline-block;
+    float: :left;
+}
+#kalan-ok{
+    background: #e74c3c;
+}
+#extra{
+    background: #8e44ad;
+}
+center{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+
+
+#giris{
+    width:100%;
+    height: 100%;
+    position: absolute;
+    z-index: 3;
+    background:#e74c3c;
+    font-size: 50vh;
+    color: #FFF;
+    text-align: center;
+    line-height: 100vh;
+}
