@@ -1,7 +1,12 @@
 <html>
 	<head>
+		<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+		<meta name="mobile-web-app-capable" content="yes">
+		<link rel="manifest" href="/manifest.json">
 		<script src="jq.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-touch-events/1.0.5/jquery.mobile-events.js"></script>
 		<script>
+			
 		function rand(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
@@ -62,6 +67,52 @@
 				
 				});
 			}
+			function okFirlat(){
+				atilanOk+=1;
+				$("#kalan-ok").html(maxOk-atilanOk);
+				if(maxOk+1>atilanOk)
+				{
+					var ok=$("<img src='"+okImg+"' class='ok' id='ok"+atilanOk+"' vurulanlar='0' />").css({"top":$("#robin").position().top+35});
+					$("body").append(ok);
+					ok.animate(
+						{"left":"100%"},{
+							duration:oran(1920,1000,$(window).width()),
+							easing:"linear",
+							step: function(){
+								
+								var okPozisyon=ok.position();
+								var balon = document.getElementsByClassName('balon');
+								
+								for (var i = 0; i < balon.length; ++i) {
+
+									var item = balon[i];  
+									var balonPozisyon=item.getBoundingClientRect();
+									var id= testCollision("ok"+atilanOk,okPozisyon, {"width":okBoyut.w,"height":okBoyut.w},$(item).attr("id"),{"top":balonPozisyon.top+35,"left":balonPozisyon.left}, {"width":balonBoyut.w,"height":balonBoyut.h});
+									$(".balon[id='"+id+"']").remove();
+									vurulanSayi=id==-1?vurulanSayi:vurulanSayi+1;
+									
+
+								}
+							},
+							complete: function(){
+								puan=vurulanSayi;
+								$("#puan").html(balonSayi+"/"+vurulanSayi);		
+								if($(this).attr("vurulanlar")>1){
+									extraAdet=extraAdet>=4?4:extraAdet+1;
+									extraPuan+=parseInt($(this).attr("vurulanlar"));
+									$("#extra span").append(" + "+$(this).attr("vurulanlar"));
+									okBoyut.w+=10;
+									okBoyut.h+=10;
+									okImg="ok"+extraAdet+(extraAdet>3?".gif":".png");
+								}
+								$(this).remove();
+							}
+						});
+				}
+				else{
+					oyunuBitir();
+				}
+			}
 			function oyun(){
 				$("#kalan-ok").html(maxOk);
 				$("#puan").html(balonSayi+"/0");
@@ -78,57 +129,15 @@
 					});
 					
 					
-					$("body").mousemove(function(e){
-							if(e.pageY>50 && e.pageY+80<$("body").height()){
+					$('body').on('tapmove', function(e,t) { 
+
+							if(t.offset.y>50 && t.offset.y+80<$("body").height()){
 								setTimeout(function(){
-									$("#robin").css("top",e.pageY-55);
+									$("#robin").css("top",t.offset.y-55);
 								},150);
 							}
-					}).click(function(){
-						atilanOk+=1;
-						$("#kalan-ok").html(maxOk-atilanOk);
-						if(maxOk+1>atilanOk)
-						{
-							var ok=$("<img src='"+okImg+"' class='ok' id='ok"+atilanOk+"' vurulanlar='0' />").css({"top":$("#robin").position().top+35});
-							$("body").append(ok);
-							ok.animate(
-								{"left":"100%"},{
-									duration:oran(1920,1000,$(window).width()),
-									easing:"linear",
-									step: function(){
-										
-										var okPozisyon=ok.position();
-										var balon = document.getElementsByClassName('balon');
-										
-										for (var i = 0; i < balon.length; ++i) {
-
-											var item = balon[i];  
-											var balonPozisyon=item.getBoundingClientRect();
-											var id= testCollision("ok"+atilanOk,okPozisyon, {"width":okBoyut.w,"height":okBoyut.w},$(item).attr("id"),{"top":balonPozisyon.top+35,"left":balonPozisyon.left}, {"width":balonBoyut.w,"height":balonBoyut.h});
-											$(".balon[id='"+id+"']").remove();
-											vurulanSayi=id==-1?vurulanSayi:vurulanSayi+1;
-											
-
-										}
-									},
-									complete: function(){
-										puan=vurulanSayi;
-										$("#puan").html(balonSayi+"/"+vurulanSayi);		
-										if($(this).attr("vurulanlar")>1){
-											extraAdet=extraAdet>=4?4:extraAdet+1;
-											extraPuan+=parseInt($(this).attr("vurulanlar"));
-											$("#extra span").append(" + "+$(this).attr("vurulanlar"));
-											okBoyut.w+=10;
-											okBoyut.h+=10;
-											okImg="ok"+extraAdet+(extraAdet>3?".gif":".png");
-										}
-										//$(this).remove();
-									}
-								});
-						}
-						else{
-							oyunuBitir();
-						}
+					}).on('tapend', function(e,t) { 
+						okFirlat();
 					});
 			}
 			function oyunuBitir(){
@@ -142,7 +151,7 @@
 	</head>
 	<body>
 		<div id="giris" >3</div>
-		<img src="robin.png" id="robin" width="200px"  />
+		<img src="robin.png" id="robin" width="100px"  />
 		<center>
 			<div id="puan">0</div>
 			<div id="kalan-ok" ></div>
