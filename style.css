@@ -27,6 +27,7 @@ body {
     position: absolute;
     right: 10px;
     bottom: -100px;
+    width:75px;
 }
 
 .ok {

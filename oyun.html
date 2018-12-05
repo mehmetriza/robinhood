@@ -24,8 +24,8 @@
 				return -1;
 			}
 		}
-		function oran(g1,g2,y){
-			return Math.floor((g2*y)/g1);
+		function oran(g){
+			return Math.floor(g);
 		}
 		</script>
 		<script>
@@ -76,7 +76,7 @@
 					$("body").append(ok);
 					ok.animate(
 						{"left":"100%"},{
-							duration:oran(1920,1000,$(window).width()),
+							duration:oran(800),
 							easing:"linear",
 							step: function(){
 								
@@ -120,7 +120,7 @@
 						setTimeout(function(){
 							var balon=$("<img src='balon.gif' class='balon' id='balon"+idx+"'  />").css("right",rand(1,4)*100);
 							$("body").append(balon);
-							balon.animate({"top":"-100px"},{duration:oran(1920,5000,$(window).width()),easing:"linear"});
+							balon.animate({"top":"-100px"},{duration:oran(1500),easing:"linear"});
 							if(balonSure.length-1==idx)
 							{
 								oyunuBitir();
