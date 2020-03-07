@@ -1,4 +1,5 @@
 # robinhood
-herkesin sevebileceği ufak defek neşeli oyun
+A little piddle game which everyone can play for escaping from bored.
 
-burdan oynayabilrisiniz https://mehmetriza.github.io/robinhood/
+Click the link below for play.
+https://mehmetriza.github.io/robinhood/
